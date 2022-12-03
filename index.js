@@ -2,18 +2,21 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
-
-const PORT = process.env.PORT || 5000;
+const cookieParser = require("cookie-parser");
 
 const errorHandler = require("./middleware/errorHandleMiddleware");
 const router = require("./routes/index");
+const errorHandleMiddleware = require("./middlewares/errorHandleMiddleware");
+
+const PORT = process.env.PORT || 5000;
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: process.env.CORS_URL }));
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api", router);
-app.use(errorHandler);
+app.use(errorHandleMiddleware);
 
 const start = async () => {
   try {
@@ -21,9 +24,7 @@ const start = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    const server = app.listen(PORT, () =>
-      console.log(`Server started on port ${PORT}`)
-    );
+    app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
   } catch (e) {
     console.log(e);
   }

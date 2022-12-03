@@ -1,3 +1,5 @@
 module.exports = function (err, req, res, next) {
-  return res.status(500).json({ message: "Some error occured" });
+  return res
+    .status(err.status)
+    .json({ success: false, message: err.message || "Some error occured" });
 };

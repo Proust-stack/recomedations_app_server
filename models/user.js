@@ -6,7 +6,6 @@ const UserSchema = new Schema(
     email: { type: String, required: true, unique: true },
     isAdmin: { type: Boolean, default: false },
     blocked: { type: Boolean, default: false },
-    likes: { type: Number, default: 0 },
     fromGoogle: {
       type: Boolean,
       default: false,

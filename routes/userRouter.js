@@ -5,12 +5,11 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const adminCheckMiddleware = require("../middlewares/adminCheckMiddleware");
 const router = new Router();
 
-router.get("/:id", authMiddleware, userController);
-router.get("/all", authMiddleware, adminCheckMiddleware, userController);
+router.get("/all", authMiddleware, adminCheckMiddleware, userController.getAll);
 router.post("/signin", userController.signin);
 router.post("/signup", userController.signup);
-router.post("/google", userController);
-router.post("/twitter", userController);
+router.post("/auth/github", userController.githubLogin);
+router.post("/auth/twitter", userController.twitterLogin);
 router.patch(
   "/block/:id",
   authMiddleware,
@@ -23,8 +22,6 @@ router.patch(
   adminCheckMiddleware,
   userController.unblockUser
 );
-router.patch("/like/:id", authMiddleware, userController.likeUser);
-router.patch("/unLike/:id", authMiddleware, userController.unLikeUser);
 router.delete(
   "/:id",
   authMiddleware,

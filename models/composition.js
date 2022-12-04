@@ -6,9 +6,9 @@ const CompositionSchema = mongoose.Schema({
     required: true,
   },
   img: [String],
-  tags: [{ String, ref: "Tag" }],
-  reviewIds: [{ type: String, ref: "Review" }],
-  groupId: { type: String, ref: "Group" },
+  tags: [{ type: String, index: true }],
+  reviewIds: [String],
+  groupId: String,
   reviewRating: [Number],
   userRating: [Number],
 });

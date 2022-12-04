@@ -1,4 +1,5 @@
 const Review = require("../models/review");
+const Composition = require("../models/composition");
 const createError = require("../utils/error");
 
 class ReviewController {
@@ -38,6 +39,18 @@ class ReviewController {
     } else {
       return next(createError(403, "Access denied"));
     }
+  }
+  async like(req, res, next) {
+    await Review.findByIdAndUpdate(req.params.id, {
+      $addToSet: { likes: req.user.id },
+    });
+    res.status(200).json("liked");
+  }
+  async unLike(req, res, next) {
+    await Review.findByIdAndUpdate(req.params.id, {
+      $pull: { likes: req.user.id },
+    });
+    res.status(200).json("unliked");
   }
 }
 

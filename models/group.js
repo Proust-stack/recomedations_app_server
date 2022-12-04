@@ -5,7 +5,7 @@ const GroupSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  compositionIds: [{ type: String, ref: "Composition" }],
+  compositionIds: [String],
 });
 
 module.exports = mongoose.model("Group", GroupSchema);

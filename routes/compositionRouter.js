@@ -11,5 +11,6 @@ router.post(
   adminCheckMiddleware,
   compositionController.create
 );
+router.get("/tags", compositionController.getByTags);
 
 module.exports = router;

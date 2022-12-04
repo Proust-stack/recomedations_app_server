@@ -4,7 +4,7 @@ const TagSchema = new Schema({
   compositionId: [
     {
       type: String,
-      ref: "Composition",
+      index: true,
     },
   ],
 });

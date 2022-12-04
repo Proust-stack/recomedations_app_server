@@ -7,6 +7,13 @@ class CompositionController {
     await composition.save();
     res.status(200).json(composition);
   }
+  async getByTags(req, res) {
+    const searchTags = req.query.tags.split(",");
+    const compositions = await Composition.find({
+      tags: { $in: searchTags },
+    }).limit(10);
+    res.status(200).json(compositions);
+  }
 }
 
 module.exports = new CompositionController();

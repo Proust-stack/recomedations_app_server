@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 
-const errorHandler = require("./middleware/errorHandleMiddleware");
 const router = require("./routes/index");
 const errorHandleMiddleware = require("./middlewares/errorHandleMiddleware");
 

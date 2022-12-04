@@ -61,23 +61,12 @@ class UserController {
     });
     res.status(200).json("user unblocked");
   }
-  async likeUser(req, res, next) {
-    await User.findByIdAndUpdate(req.params.id, {
-      $inc: { likes: 1 },
-    });
-    res.status(200).json("liked");
-  }
-  async unLikeUser(req, res, next) {
-    await User.findByIdAndUpdate(req.params.id, {
-      $dec: { likes: 1 },
-    });
-    res.status(200).json("unliked");
-  }
+
   async deleteUser(req, res, next) {
     await User.findByIdAndDelete(req.params.id);
     res.status(200).json("User has been deleted.");
   }
-  async googleAuth(req, res, next) {
+  async githubLogin(req, res, next) {
     try {
       const user = await User.findOne({ email: req.body.email });
       if (user) {
@@ -102,6 +91,7 @@ class UserController {
       next(err);
     }
   }
+  async twitterLogin(req, res, next) {}
 }
 
 module.exports = new UserController();

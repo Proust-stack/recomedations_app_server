@@ -5,17 +5,19 @@ const ReviewSchema = mongoose.Schema(
     title: {
       type: String,
       required: true,
+      index: true,
     },
     body: {
       type: String,
       required: true,
+      index: true,
     },
     img: [String],
-    comments: [{ String, ref: "Comment" }],
-    userId: { String, ref: "User", required: true },
+    comments: [{ type: String, index: true }],
+    userId: { type: String, required: true },
+    likes: [String],
     compositionId: {
       type: String,
-      ref: "Composition",
       required: true,
     },
   },

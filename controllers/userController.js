@@ -1,5 +1,5 @@
 const createError = require("../utils/error");
-const generateJwt = require("../utils/jwt");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 class UserController {
@@ -66,30 +66,23 @@ class UserController {
     await User.findByIdAndDelete(req.params.id);
     res.status(200).json("User has been deleted.");
   }
-  async githubLogin(req, res, next) {
-    try {
-      const user = await User.findOne({ email: req.body.email });
-      if (user) {
-        const token = generateJwt(user._id, user.isAdmin, user.blocked);
-        return res
-          .cookie("access_token", token, { httpOnly: true })
-          .status(200)
-          .json(user._id);
-      } else {
-        const newUser = new User({
-          ...req.body,
-          fromGoogle: true,
-        });
-        const user = await newUser.save();
-        const token = generateJwt(user._id, user.isAdmin, user.blocked);
-        return res
-          .cookie("access_token", token, { httpOnly: true })
-          .status(200)
-          .json(user._id);
-      }
-    } catch (err) {
-      next(err);
+  async googleSignin(req, res, next) {
+    let user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      const newUser = new User({
+        ...req.body,
+        fromGoogle: true,
+      });
+      user = await newUser.save();
     }
+    const token = jwt.sign(
+      { id: user._id, admin: user.isAdmin, blocked: user.blocked },
+      process.env.SECRET_FOR_JWT
+    );
+    return res
+      .cookie("access_token", token, { httpOnly: true })
+      .status(200)
+      .json(user._doc);
   }
   async twitterLogin(req, res, next) {}
 }

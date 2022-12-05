@@ -8,7 +8,7 @@ const router = new Router();
 router.get("/all", authMiddleware, adminCheckMiddleware, userController.getAll);
 router.post("/signin", userController.signin);
 router.post("/signup", userController.signup);
-router.post("/auth/github", userController.githubLogin);
+router.post("/auth/google", userController.googleSignin);
 router.post("/auth/twitter", userController.twitterLogin);
 router.patch(
   "/block/:id",

@@ -14,6 +14,13 @@ class CompositionController {
     }).limit(10);
     res.status(200).json(compositions);
   }
+  async getAllByGroup(req, res) {
+    console.log(req.params.id);
+    const compositions = await Composition.find({
+      group: req.params.id,
+    });
+    res.status(200).json(compositions);
+  }
 }
 
 module.exports = new CompositionController();

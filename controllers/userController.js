@@ -4,7 +4,7 @@ const User = require("../models/user");
 
 class UserController {
   async getAll(req, res) {
-    const users = await User.findAll();
+    const users = await User.find();
     return res.json(users);
   }
   async blockUser(req, res, next) {
@@ -35,10 +35,21 @@ class UserController {
       user = await newUser.save();
     }
     const token = jwt.sign(
-      { id: user._id, admin: user.isAdmin, blocked: user.blocked },
-      process.env.SECRET_FOR_JWT
+      {
+        id: user._id,
+      },
+      process.env.SECRET_FOR_JWT,
+      { expiresIn: "24h" }
     );
-    return res.cookie("access_token", token).status(200).json(user._doc);
+    res
+      .cookie("access_token", token, {
+        sameSite: "none",
+        secure: true,
+        httpOnly: false,
+      })
+      .status(200)
+      .json(user._doc);
+    // res.status(200).json({ token });
   }
   async twitterLogin(req, res, next) {}
 }

@@ -8,11 +8,12 @@ class ReviewController {
     res.status(200).json(review);
   }
   async getAllOfUser(req, res) {
-    const reviews = await Review.find({ userId: req.params.userId });
+    console.log(req.query);
+    const reviews = await Review.find({ user: req.params.id });
     res.status(200).json(reviews);
   }
   async createReview(req, res) {
-    const newReview = new Review({ userId: req.user.id, ...req.body });
+    const newReview = new Review({ ...req.body.review });
     const savedReview = await newReview.save();
     res.status(200).json(savedReview);
   }

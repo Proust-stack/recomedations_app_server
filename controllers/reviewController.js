@@ -8,7 +8,6 @@ class ReviewController {
     res.status(200).json(review);
   }
   async getAllOfUser(req, res) {
-    console.log(req.query);
     const reviews = await Review.find({ user: req.params.id });
     res.status(200).json(reviews);
   }

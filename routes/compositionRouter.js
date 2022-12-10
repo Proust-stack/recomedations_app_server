@@ -8,5 +8,6 @@ const router = new Router();
 router.post("/create", authMiddleware, compositionController.create);
 router.get("/tags", compositionController.getByTags);
 router.get("/all/:id", compositionController.getAllByGroup);
+router.get("/:id", compositionController.getOne);
 
 module.exports = router;

@@ -21,6 +21,11 @@ class CompositionController {
     });
     res.status(200).json(compositions);
   }
+  async getOne(req, res) {
+    console.log(req.params.id);
+    const composition = await Composition.findById(req.params.id);
+    res.status(200).json(composition);
+  }
 }
 
 module.exports = new CompositionController();

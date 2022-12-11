@@ -7,12 +7,25 @@ class ReviewController {
     const review = await Review.findById(req.params.id);
     res.status(200).json(review);
   }
+  async getAll(req, res) {
+    const reviews = await Review.find({});
+    res.status(200).json(reviews);
+  }
   async getAllOfUser(req, res) {
     const reviews = await Review.find({ user: req.params.id });
     res.status(200).json(reviews);
   }
+  async getAllOfComposition(req, res) {
+    const reviews = await Review.find({ composition: req.params.id });
+    res.status(200).json(reviews);
+  }
   async createReview(req, res) {
-    const newReview = new Review({ ...req.body.review });
+    console.log(req.body);
+
+    await Composition.findByIdAndUpdate(req.body._id, {
+      $push: { tags: req.body.tags },
+    });
+    const newReview = new Review({ ...req.body });
     const savedReview = await newReview.save();
     res.status(200).json(savedReview);
   }

@@ -6,10 +6,6 @@ module.exports = (req, res, next) => {
     next();
   }
   const token = req.cookies.access_token;
-  //const token = req.headers.authorization.split(" ")[1];
-  // if (!req.body.review.user)
-  //   next(createError(401, "You are not authenticated!"));
-
   jwt.verify(token, process.env.SECRET_FOR_JWT, (err, user) => {
     if (err) next(createError(403, "Token is not valid!"));
     req.user = user;

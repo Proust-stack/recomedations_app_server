@@ -39,7 +39,7 @@ class UserController {
         id: user._id,
       },
       process.env.SECRET_FOR_JWT,
-      { expiresIn: "24h" }
+      { expiresIn: "800h" }
     );
     res
       .cookie("access_token", token, {

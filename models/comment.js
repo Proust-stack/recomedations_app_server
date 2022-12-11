@@ -2,12 +2,7 @@ const mongoose = require("mongoose");
 
 const CommentSchema = mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-      index: true,
-    },
-    body: {
+    text: {
       type: String,
       required: true,
       index: true,

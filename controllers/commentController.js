@@ -1,14 +1,20 @@
 const Comment = require("../models/comment");
+const Review = require("../models/review");
 const createError = require("../utils/error");
 
 class CommentController {
   async getAll(req, res, next) {
-    const comments = await Comment.find({ reviewId: req.params.id });
+    const comments = await Comment.find({ review: req.params.id });
     res.status(200).json(comments);
   }
   async create(req, res, next) {
-    const comment = new Comment({ ...req.body, userId: req.user.id });
+    console.log(req.user.id);
+    console.log(req.body);
+    const comment = new Comment({ ...req.body, user: req.user.id });
     await comment.save();
+    // await Review.findByIdAndUpdate(req.body.review, {
+    //   $push: { comments: comment._id },
+    // });
     res.status(200).send(comment);
   }
   async delete(req, res, next) {

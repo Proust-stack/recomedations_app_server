@@ -8,8 +8,6 @@ class CommentController {
     res.status(200).json(comments);
   }
   async create(req, res, next) {
-    console.log(req.user.id);
-    console.log(req.body);
     const comment = new Comment({ ...req.body, user: req.user.id });
     await comment.save();
     // await Review.findByIdAndUpdate(req.body.review, {

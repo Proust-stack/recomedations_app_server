@@ -4,7 +4,9 @@ const createError = require("../utils/error");
 
 class CommentController {
   async getAll(req, res, next) {
-    const comments = await Comment.find({ review: req.params.id });
+    const comments = await Comment.find({ review: req.params.id })
+      .populate("user")
+      .exec();
     res.status(200).json(comments);
   }
   async create(req, res, next) {

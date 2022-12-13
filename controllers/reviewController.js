@@ -8,7 +8,7 @@ class ReviewController {
     res.status(200).json(review);
   }
   async getAll(req, res) {
-    const reviews = await Review.find({});
+    const reviews = await Review.find({}).populate("user").exec();
     res.status(200).json(reviews);
   }
   async getAllOfUser(req, res) {
@@ -54,16 +54,24 @@ class ReviewController {
     }
   }
   async like(req, res, next) {
-    await Review.findByIdAndUpdate(req.params.id, {
-      $addToSet: { likes: req.user.id },
-    });
-    res.status(200).json("liked");
+    const review = await Review.findByIdAndUpdate(
+      req.params.id,
+      {
+        $addToSet: { likes: req.user.id },
+      },
+      { new: true }
+    );
+    res.status(200).json(review);
   }
   async unLike(req, res, next) {
-    await Review.findByIdAndUpdate(req.params.id, {
-      $pull: { likes: req.user.id },
-    });
-    res.status(200).json("unliked");
+    const review = await Review.findByIdAndUpdate(
+      req.params.id,
+      {
+        $pull: { likes: req.user.id },
+      },
+      { new: true }
+    );
+    res.status(200).json(review);
   }
 }
 

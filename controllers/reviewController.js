@@ -8,7 +8,28 @@ class ReviewController {
     res.status(200).json(review);
   }
   async getAll(req, res) {
-    const reviews = await Review.find({}).populate("user").exec();
+    const reviews = await Review.find({})
+      .populate("user")
+      .populate("composition")
+      .exec();
+    res.status(200).json(reviews);
+  }
+  async getByTags(req, res, next) {
+    const tags = req.query.tags;
+    let reviews;
+    if (tags?.length) {
+      reviews = await Review.find({ tags: { $in: tags } })
+        .populate("user")
+        .populate("composition")
+        .limit(20)
+        .exec();
+    } else {
+      reviews = await Review.find({})
+        .populate("user")
+        .populate("composition")
+        .exec();
+    }
+
     res.status(200).json(reviews);
   }
   async getAllOfUser(req, res) {
@@ -17,6 +38,15 @@ class ReviewController {
   }
   async getAllOfComposition(req, res) {
     const reviews = await Review.find({ composition: req.params.id });
+    res.status(200).json(reviews);
+  }
+  async search(req, res) {
+    const reviews = await Review.aggregate().search({
+      text: {
+        query: req.query.q,
+        path: ["text", "comments"],
+      },
+    });
     res.status(200).json(reviews);
   }
   async createReview(req, res) {

@@ -38,5 +38,16 @@ ReviewSchema.pre("validate", function (next) {
 
   next();
 });
+// ReviewSchema.pre("aggregate", function (next) {
+//   this.pipeline().aggregate({
+//     $lookup: {
+//       from: ReviewSchema.collection.name,
+//       localField: "comments",
+//       foreignField: "text",
+//       as: "comments",
+//     },
+//   });
+//   next();
+// });
 
 module.exports = mongoose.model("Review", ReviewSchema);

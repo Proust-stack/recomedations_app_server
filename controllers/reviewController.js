@@ -1,4 +1,6 @@
 const Review = require("../models/review");
+const User = require("../models/user");
+const Comment = require("../models/comment");
 const Composition = require("../models/composition");
 const createError = require("../utils/error");
 
@@ -33,7 +35,9 @@ class ReviewController {
     res.status(200).json(reviews);
   }
   async getAllOfUser(req, res) {
-    const reviews = await Review.find({ user: req.params.id });
+    const reviews = await Review.find({ user: req.params.id })
+      .populate("composition")
+      .exec();
     res.status(200).json(reviews);
   }
   async getAllOfComposition(req, res) {
@@ -41,12 +45,37 @@ class ReviewController {
     res.status(200).json(reviews);
   }
   async search(req, res) {
-    const reviews = await Review.aggregate().search({
-      text: {
-        query: req.query.q,
-        path: ["text", "comments"],
+    // const reviews = await Review.find({})
+    //   .populate("comments")
+    //   .find({
+    //     $default: {
+    //       $search: {
+    //         text: {
+    //           query: req.query.q,
+    //           path: ["text", "comments"],
+    //         },
+    //       },
+    //     },
+    //   });
+
+    const reviews = await Review.aggregate([
+      {
+        $search: {
+          text: {
+            query: req.query.q,
+            path: ["text", "comments"],
+          },
+        },
       },
-    });
+      {
+        $lookup: {
+          from: Review.collection.name,
+          localField: "comments",
+          foreignField: "text",
+          as: "comments",
+        },
+      },
+    ]);
     res.status(200).json(reviews);
   }
   async createReview(req, res) {
@@ -75,13 +104,13 @@ class ReviewController {
     }
   }
   async deleteReview(req, res) {
-    const review = await Review.findById(req.params.id);
-    if (req.user.id === review.userId || req.user.isAdmin) {
-      const updatedReview = await Review.findByIdAndDelete(req.params.id);
-      res.status(200).json({ success: true });
-    } else {
-      return next(createError(403, "Access denied"));
-    }
+    const user = await User.findById(req.user.id);
+    // if (req.user.id === review.user || user.isAdmin) {
+    //   await Review.findByIdAndDelete({ _id: { $in: req.body.reviews} });
+    //   res.status(200).json({ success: true });
+    // } else {
+    //   return next(createError(403, "Access denied"));
+    // }
   }
   async like(req, res, next) {
     const review = await Review.findByIdAndUpdate(

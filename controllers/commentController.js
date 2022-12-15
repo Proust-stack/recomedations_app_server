@@ -12,9 +12,9 @@ class CommentController {
   async create(req, res, next) {
     const comment = new Comment({ ...req.body, user: req.user.id });
     await comment.save();
-    // await Review.findByIdAndUpdate(req.body.review, {
-    //   $push: { comments: comment._id },
-    // });
+    await Review.findByIdAndUpdate(req.body.review, {
+      $push: { comments: comment._id },
+    });
     res.status(200).send(comment);
   }
   async delete(req, res, next) {

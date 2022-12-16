@@ -20,6 +20,10 @@ class CompositionController {
     });
     res.status(200).json(compositions);
   }
+  async getAllCompositions(req, res) {
+    const compositions = await Composition.find({});
+    res.status(200).json(compositions);
+  }
   async getOne(req, res) {
     const composition = await Composition.findById(req.params.id);
     res.status(200).json(composition);

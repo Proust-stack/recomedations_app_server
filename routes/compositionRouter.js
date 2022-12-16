@@ -9,5 +9,9 @@ router.post("/create", authMiddleware, compositionController.create);
 router.get("/tags", compositionController.getByTags);
 router.get("/all/:id", compositionController.getAllByGroup);
 router.get("/:id", compositionController.getOne);
+router.get(
+  "/compositions/all/nofilter",
+  compositionController.getAllCompositions
+);
 
 module.exports = router;

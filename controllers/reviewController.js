@@ -6,7 +6,9 @@ const createError = require("../utils/error");
 
 class ReviewController {
   async getOne(req, res) {
-    const review = await Review.findById(req.params.id);
+    const review = await Review.findById(req.params.id)
+      .populate("composition")
+      .exec();
     res.status(200).json(review);
   }
   async getAll(req, res) {

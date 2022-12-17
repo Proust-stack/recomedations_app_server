@@ -2,12 +2,14 @@ const Review = require("../models/review");
 const User = require("../models/user");
 const Comment = require("../models/comment");
 const Composition = require("../models/composition");
+const ReviewRating = require("../models/reviewRating");
 const createError = require("../utils/error");
 
 class ReviewController {
   async getOne(req, res) {
     const review = await Review.findById(req.params.id)
       .populate("composition")
+      .populate("user")
       .exec();
     res.status(200).json(review);
   }
@@ -81,18 +83,32 @@ class ReviewController {
     res.status(200).json(reviews);
   }
   async createReview(req, res) {
-    console.log(req.body);
+    const reviewRating = new ReviewRating({
+      user: req.user.id,
+      reviewEstimation: req.body.reviewRating,
+    });
+    const savedReviewRating = await reviewRating.save();
 
     await Composition.findByIdAndUpdate(req.body._id, {
       $push: { tags: req.body.tags },
+      $push: { reviewsRating: savedReviewRating._id },
     });
     const newReview = new Review({ ...req.body });
     const savedReview = await newReview.save();
     res.status(200).json(savedReview);
   }
-  async updateReview(req, res) {
-    const review = await Review.findById(req.params.id);
-    if (req.user.id === review.userId || req.user.isAdmin) {
+  async updateReview(req, res, next) {
+    console.log(req.body.composition);
+    if (req.user.id === req.body.user || req.user.isAdmin) {
+      await ReviewRating.findOneAndUpdate(
+        { user: req.body.user },
+        {
+          $set: { reviewEstimation: req.body.reviewRating },
+        }
+      );
+      await Composition.findByIdAndUpdate(req.body.composition, {
+        $set: { tags: req.body.tags },
+      });
       const updatedReview = await Review.findByIdAndUpdate(
         req.params.id,
         {

@@ -1,4 +1,5 @@
 const Composition = require("../models/composition");
+const UserRating = require("../models/userRating");
 const createError = require("../utils/error");
 
 class CompositionController {
@@ -6,6 +7,17 @@ class CompositionController {
     const composition = new Composition({ ...req.body });
     await composition.save();
     res.status(200).json(composition);
+  }
+  async setUserRating(req, res) {
+    const userRating = new UserRating({
+      user: req.user.id,
+      userEstimation: req.body.userRating,
+    });
+    const savedUserRating = await userRating.save();
+    await Composition.findByIdAndUpdate(req.params.id, {
+      $push: { userEstimation: savedUserRating._id },
+    });
+    res.status(200).json(savedUserRating);
   }
   async getByTags(req, res) {
     const searchTags = req.query.tags.split(",");
@@ -25,7 +37,11 @@ class CompositionController {
     res.status(200).json(compositions);
   }
   async getOne(req, res) {
-    const composition = await Composition.findById(req.params.id);
+    const composition = await Composition.findById(req.params.id)
+      .populate("group")
+      .populate("reviewsRating")
+      .populate("usersRating")
+      .exec();
     res.status(200).json(composition);
   }
 }

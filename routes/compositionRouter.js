@@ -6,6 +6,11 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const router = new Router();
 
 router.post("/create", authMiddleware, compositionController.create);
+router.patch(
+  "/userrating/:id",
+  authMiddleware,
+  compositionController.setUserRating
+);
 router.get("/tags", compositionController.getByTags);
 router.get("/all/:id", compositionController.getAllByGroup);
 router.get("/:id", compositionController.getOne);

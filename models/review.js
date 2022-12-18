@@ -16,7 +16,7 @@ const ReviewSchema = mongoose.Schema(
       required: true,
     },
     img: [String],
-    tags: [{ type: String, index: true }],
+    tags: [{ type: String, unique: true }],
     comments: [{ type: mongoose.ObjectId, ref: "Comment" }],
     user: { type: mongoose.ObjectId, ref: "User" },
     likes: [{ type: mongoose.ObjectId, ref: "User" }],

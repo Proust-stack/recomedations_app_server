@@ -8,9 +8,12 @@ class TagController {
     res.status(200).json(reviews);
   }
   async getAllByGroup(req, res) {
-    const tags = req.query.id;
-    const reviews = await Review.find({}).select("tags").limit(20).exec();
-    res.status(200).json(reviews);
+    console.log(req.params.id);
+    const tags = await Composition.find({ group: req.params.id })
+      .select("tags")
+      .limit(20)
+      .exec();
+    res.status(200).json(tags);
   }
   async getOne(req, res) {
     // const reviews = await Review.find({}, "tags").exec();

@@ -15,6 +15,7 @@ class ReviewController {
   }
   async getAll(req, res) {
     const reviews = await Review.find({})
+      .sort({ updatedAt: -1 })
       .populate("user")
       .populate("composition")
       .exec();
@@ -98,7 +99,6 @@ class ReviewController {
     res.status(200).json(savedReview);
   }
   async updateReview(req, res, next) {
-    console.log(req.body.composition);
     if (req.user.id === req.body.user || req.user.isAdmin) {
       await ReviewRating.findOneAndUpdate(
         { user: req.body.user },
@@ -122,13 +122,14 @@ class ReviewController {
     }
   }
   async deleteReview(req, res) {
+    const review = await Review.findById(req.body.reviews[0]);
     const user = await User.findById(req.user.id);
-    // if (req.user.id === review.user || user.isAdmin) {
-    //   await Review.findByIdAndDelete({ _id: { $in: req.body.reviews} });
-    //   res.status(200).json({ success: true });
-    // } else {
-    //   return next(createError(403, "Access denied"));
-    // }
+    if (req.user.id === review.user || user.isAdmin) {
+      await Review.deleteMany({ _id: { $in: req.body.reviews } });
+      res.status(200).json({ success: true });
+    } else {
+      return next(createError(403, "Access denied"));
+    }
   }
   async like(req, res, next) {
     const review = await Review.findByIdAndUpdate(

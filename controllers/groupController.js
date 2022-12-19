@@ -8,7 +8,6 @@ class GroupController {
     res.status(200).json(groups);
   }
   async createOne(req, res) {
-    console.log(req.body);
     const group = new Group({ ...req.body });
     await group.save();
     res.status(200).json(group);

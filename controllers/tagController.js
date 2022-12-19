@@ -8,7 +8,6 @@ class TagController {
     res.status(200).json(reviews);
   }
   async getAllByGroup(req, res) {
-    console.log(req.params.id);
     const tags = await Composition.find({ group: req.params.id })
       .select("tags")
       .limit(20)

@@ -15,7 +15,7 @@ class CompositionController {
     });
     const savedUserRating = await userRating.save();
     await Composition.findByIdAndUpdate(req.params.id, {
-      $push: { userEstimation: savedUserRating._id },
+      $push: { usersRating: savedUserRating._id },
     });
     res.status(200).json(savedUserRating);
   }

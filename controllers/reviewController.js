@@ -9,7 +9,6 @@ class ReviewController {
   async getOne(req, res) {
     const review = await Review.findById(req.params.id)
       .populate("composition")
-      .populate("user")
       .exec();
     res.status(200).json(review);
   }
@@ -89,8 +88,7 @@ class ReviewController {
       reviewEstimation: req.body.reviewRating,
     });
     const savedReviewRating = await reviewRating.save();
-
-    await Composition.findByIdAndUpdate(req.body._id, {
+    await Composition.findByIdAndUpdate(req.body.composition, {
       $push: { tags: req.body.tags },
       $push: { reviewsRating: savedReviewRating._id },
     });

@@ -4,7 +4,7 @@ const createError = require("../utils/error");
 
 class TagController {
   async getAll(req, res) {
-    const reviews = await Review.find({}).select("tags").limit(20).exec();
+    const reviews = await Composition.find({}).select("tags").limit(20).exec();
     res.status(200).json(reviews);
   }
   async getAllByGroup(req, res) {

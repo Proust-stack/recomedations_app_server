@@ -1,8 +1,4 @@
 const mongoose = require("mongoose");
-const { marked } = require("marked");
-const createDomPurify = require("dompurify");
-const { JSDOM } = require("jsdom");
-const dompurify = createDomPurify(new JSDOM().window);
 
 const ReviewSchema = mongoose.Schema(
   {
@@ -30,24 +26,5 @@ const ReviewSchema = mongoose.Schema(
     timestamps: true,
   }
 );
-
-ReviewSchema.pre("validate", function (next) {
-  if (this.markdown) {
-    this.text = dompurify.sanitize(marked(this.markdown));
-  }
-
-  next();
-});
-// ReviewSchema.pre("aggregate", function (next) {
-//   this.pipeline().aggregate({
-//     $lookup: {
-//       from: ReviewSchema.collection.name,
-//       localField: "comments",
-//       foreignField: "text",
-//       as: "comments",
-//     },
-//   });
-//   next();
-// });
 
 module.exports = mongoose.model("Review", ReviewSchema);

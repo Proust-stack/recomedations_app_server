@@ -7,6 +7,7 @@ const createError = require("../utils/error");
 
 class ReviewController {
   async getOne(req, res) {
+    console.log(req.params.id);
     const review = await Review.findById(req.params.id)
       .populate("composition")
       .exec();
@@ -28,11 +29,14 @@ class ReviewController {
         .populate("user")
         .populate("composition")
         .limit(20)
+        .sort("-createdAt")
         .exec();
     } else {
       reviews = await Review.find({})
         .populate("user")
         .populate("composition")
+        .limit(20)
+        .sort("-createdAt")
         .exec();
     }
 
@@ -97,20 +101,25 @@ class ReviewController {
     res.status(200).json(savedReview);
   }
   async updateReview(req, res, next) {
+    console.log(req.params.id);
     if (req.user.id === req.body.user || req.user.isAdmin) {
-      await ReviewRating.findOneAndUpdate(
-        { user: req.body.user },
+      const savedReviewRating = await ReviewRating.findByIdAndUpdate(
+        req.body.reviewsRatingId,
         {
-          $set: { reviewEstimation: req.body.reviewRating },
-        }
+          reviewEstimation: req.body.reviewRating,
+        },
+        { new: true }
       );
       await Composition.findByIdAndUpdate(req.body.composition, {
-        $set: { tags: req.body.tags },
+        tags: req.body.tags,
+        reviewsRating: savedReviewRating._id,
       });
       const updatedReview = await Review.findByIdAndUpdate(
         req.params.id,
         {
-          $set: req.body,
+          tags: req.body.tags,
+          title: req.body.title,
+          markdown: req.body.markdown,
         },
         { new: true }
       );

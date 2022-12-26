@@ -7,7 +7,6 @@ const createError = require("../utils/error");
 
 class ReviewController {
   async getOne(req, res) {
-    console.log(req.params.id);
     const review = await Review.findById(req.params.id)
       .populate("composition")
       .exec();
@@ -73,6 +72,7 @@ class ReviewController {
             query: req.query.q,
             path: ["text", "comments"],
           },
+          fuzzy: {},
         },
       },
       {
@@ -98,10 +98,9 @@ class ReviewController {
     });
     const newReview = new Review({ ...req.body });
     const savedReview = await newReview.save();
-    res.status(200).json(savedReview);
+    res.status(201).json(savedReview);
   }
   async updateReview(req, res, next) {
-    console.log(req.params.id);
     if (req.user.id === req.body.user || req.user.isAdmin) {
       const savedReviewRating = await ReviewRating.findByIdAndUpdate(
         req.body.reviewsRatingId,

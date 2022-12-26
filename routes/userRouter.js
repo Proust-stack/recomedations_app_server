@@ -20,6 +20,12 @@ router.patch(
   adminCheckMiddleware,
   userController.unblockUser
 );
+router.patch(
+  "/role/:id",
+  authMiddleware,
+  adminCheckMiddleware,
+  userController.unblockUser
+);
 router.delete(
   "/:id",
   authMiddleware,

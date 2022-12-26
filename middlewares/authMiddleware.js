@@ -1,14 +1,19 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 const createError = require("../utils/error");
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   if (req.method === "OPTIONS") {
     next();
   }
   const token = req.cookies.access_token;
-  jwt.verify(token, process.env.SECRET_FOR_JWT, (err, user) => {
+  const data = jwt.verify(token, process.env.SECRET_FOR_JWT, (err, user) => {
     if (err) next(createError(403, "Token is not valid!"));
-    req.user = user;
-    next();
+    return user;
   });
+  const { id } = data;
+  const user = await User.findById(id);
+  if (user.blocked) next(createError(401, "Access denied"));
+  req.user = user;
+  next();
 };

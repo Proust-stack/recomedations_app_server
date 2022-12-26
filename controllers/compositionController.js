@@ -37,6 +37,9 @@ class CompositionController {
     res.status(200).json(compositions);
   }
   async getOne(req, res) {
+    if (!req.params.id) {
+      res.status(204).json("not found");
+    }
     const composition = await Composition.findById(req.params.id)
       .populate("group")
       .populate("reviewsRating")

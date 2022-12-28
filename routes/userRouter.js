@@ -6,8 +6,7 @@ const adminCheckMiddleware = require("../middlewares/adminCheckMiddleware");
 const router = new Router();
 
 router.get("/all", authMiddleware, adminCheckMiddleware, userController.getAll);
-router.post("/auth/google", userController.googleSignin);
-router.post("/auth/twitter", userController.twitterLogin);
+router.post("/auth/google", userController.signin);
 router.patch(
   "/block/:id",
   authMiddleware,

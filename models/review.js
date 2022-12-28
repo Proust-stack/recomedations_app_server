@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const ReviewSchema = mongoose.Schema(
+const ReviewSchema = new Schema(
   {
     title: {
       type: String,
@@ -26,5 +27,9 @@ const ReviewSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+// ReviewSchema.pre("aggregate", function (docs) {
+//   mongoose.model("Review", ReviewSchema).find().populate("comments");
+// });
 
 module.exports = mongoose.model("Review", ReviewSchema);

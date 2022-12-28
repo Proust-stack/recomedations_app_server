@@ -19,6 +19,7 @@ class CompositionController {
     });
     res.status(200).json(savedUserRating);
   }
+
   async getByTags(req, res) {
     const searchTags = req.query.tags.split(",");
     const compositions = await Composition.find({
@@ -29,11 +30,14 @@ class CompositionController {
   async getAllByGroup(req, res) {
     const compositions = await Composition.find({
       group: req.params.id,
-    });
+    }).limit(20);
     res.status(200).json(compositions);
   }
   async getAllCompositions(req, res) {
-    const compositions = await Composition.find({});
+    const compositions = await Composition.find({})
+      .sort("title")
+      .limit(30)
+      .exec();
     res.status(200).json(compositions);
   }
   async getOne(req, res) {

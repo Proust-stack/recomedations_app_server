@@ -9,7 +9,6 @@ class UserController {
     return res.json(users);
   }
   async blockUser(req, res, next) {
-    console.log(req.params.id);
     const user = await User.findByIdAndUpdate(
       req.params.id,
       {
@@ -27,6 +26,7 @@ class UserController {
     res.status(200).json("user unblocked");
   }
   async changeRole(req, res, next) {
+    console.log(req.body);
     await User.findByIdAndUpdate(req.params.id, {
       $set: req.body,
     });
@@ -36,15 +36,14 @@ class UserController {
   async deleteUser(req, res, next) {
     await User.findByIdAndDelete(req.params.id);
     await Review.deleteMany({ user: req.params.id });
-    res.status(200).json("User has been deleted.");
+    res.status(200).json("User and his reviews have been deleted.");
   }
 
-  async googleSignin(req, res, next) {
+  async signin(req, res, next) {
     let user = await User.findOne({ email: req.body.email });
     if (!user) {
       const newUser = new User({
         ...req.body,
-        fromGoogle: true,
       });
       user = await newUser.save();
     }
@@ -65,7 +64,6 @@ class UserController {
       .json(user._doc);
     // res.status(200).json({ token });
   }
-  async twitterLogin(req, res, next) {}
 }
 
 module.exports = new UserController();

@@ -13,11 +13,11 @@ const updateReviewRating = async (reviewsRatingId, reviewRating) => {
   return savedReviewRating;
 };
 
-const updateComposition = async (compositionId, reviewRatingId) => {
-  await Composition.findByIdAndUpdate(compositionId, {
-    reviewsRating: reviewRatingId,
-  });
-};
+// const updateComposition = async (compositionId) => {
+//   await Composition.findByIdAndUpdate(compositionId, {
+//     reviewsRating: reviewRatingId,
+//   });
+// };
 
 const updateReview = async (reviewId, tags, title, markdown) => {
   const updatedReview = await Review.findByIdAndUpdate(
@@ -34,6 +34,5 @@ const updateReview = async (reviewId, tags, title, markdown) => {
 
 module.exports = {
   updateReviewRating,
-  updateComposition,
   updateReview,
 };

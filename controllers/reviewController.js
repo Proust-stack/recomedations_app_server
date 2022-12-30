@@ -6,7 +6,6 @@ const ReviewRating = require("../models/reviewRating");
 const createError = require("../utils/error");
 const {
   updateReviewRating,
-  updateComposition,
   updateReview,
 } = require("../services/review/updateReviewService");
 const {
@@ -130,7 +129,7 @@ class ReviewController {
         req.body.reviewsRatingId,
         req.body.reviewRating
       );
-      await updateComposition(req.body.composition, savedReviewRating._id);
+      // await updateComposition(req.body.composition);
 
       const updatedReview = await updateReview(
         req.params.id,

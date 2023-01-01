@@ -64,49 +64,38 @@ class ReviewController {
     res.status(200).json(reviews);
   }
   async search(req, res) {
-    const reviews = await Review.find({
-      $search: {
-        index: "default",
-        text: {
-          query: req.query.q,
-          path: {
-            wildcard: "*",
-          },
-        },
-      },
-    })
-      .populate("comments")
-      .populate("markdown")
-      .exec();
-    // .find({
-    //   $default: {
-    //     $search: {
-    //       text: {
-    //         query: req.query.q,
-    //         path: ["text", "comments"],
-    //       },
-    //     },
+    // const reviews = await Review.aggregate().search({
+    //   text: {
+    //     query: req.query.q,
+    //     path: ["markdown", "comments", "title"],
     //   },
     // });
 
-    // const reviews = await Review.aggregate([
-    //   {
-    //     $search: {
-    //       text: {
-    //         query: req.query.q,
-    //         path: ["markdown", "comments"],
-    //       },
-    //     },
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: Review.collection.name,
-    //       localField: "comments",
-    //       foreignField: "text",
-    //       as: "comments",
-    //     },
-    //   },
-    // ]);
+    const reviews = await Review.aggregate([
+      {
+        $search: {
+          text: {
+            query: req.query.q,
+            path: { wildcard: "*" },
+            // fuzzy: {
+            //   maxEdits: 1,
+            // },
+          },
+          highlight: {
+            path: "markdown",
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: Comment.collection.name,
+          localField: "comments",
+          foreignField: "_id",
+          as: "comments",
+        },
+      },
+    ]);
+
     res.status(200).json(reviews);
   }
   async createReview(req, res) {

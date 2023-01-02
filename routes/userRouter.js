@@ -23,7 +23,7 @@ router.patch(
   "/role/:id",
   authMiddleware,
   adminCheckMiddleware,
-  userController.unblockUser
+  userController.changeRole
 );
 router.delete(
   "/:id",

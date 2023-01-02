@@ -26,10 +26,9 @@ class UserController {
     res.status(200).json("user unblocked");
   }
   async changeRole(req, res, next) {
-    console.log(req.body);
-    await User.findByIdAndUpdate(req.params.id, {
-      $set: req.body,
-    });
+    const user = await User.findById(req.params.id);
+    user.isAdmin = !user.isAdmin;
+    await user.save();
     res.status(200).json("role changed");
   }
 

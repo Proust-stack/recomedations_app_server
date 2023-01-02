@@ -17,37 +17,45 @@ class ReviewController {
   async getOne(req, res) {
     const review = await Review.findById(req.params.id)
       .populate("composition")
+      .populate("user")
       .exec();
     res.status(200).json(review);
   }
-  async getAll(req, res) {
-    const reviews = await Review.find({})
-      .sort({ updatedAt: -1 })
-      .limit(20)
-      .populate("user")
-      .populate("composition")
-      .exec();
-    res.status(200).json(reviews);
-  }
   async getByTags(req, res, next) {
-    const tags = req.query.tags;
-    let reviews;
-    if (tags?.length) {
-      reviews = await Review.find({ tags: { $in: tags } })
+    const tags = req.query.tags || [];
+    let latestReviews;
+    let hottestReviews;
+    if (tags.length) {
+      latestReviews = await Review.find({ tags: { $in: tags } })
         .sort("-createdAt")
-        .limit(20)
+        .limit(10)
+        .populate("user")
+        .populate("composition")
+        .exec();
+      hottestReviews = await Review.find({ tags: { $in: tags } })
+        .sort({ "likes.length": 1 })
+        .limit(10)
         .populate("user")
         .populate("composition")
         .exec();
     } else {
-      reviews = await Review.find({})
+      latestReviews = await Review.find({})
         .sort("-createdAt")
-        .limit(20)
+        .limit(10)
+        .populate("user")
+        .populate("composition")
+        .exec();
+      hottestReviews = await Review.find({})
+        .sort({ "likes.length": 1 })
+        .limit(10)
         .populate("user")
         .populate("composition")
         .exec();
     }
-
+    const reviews = {
+      latestReviews,
+      hottestReviews,
+    };
     res.status(200).json(reviews);
   }
   async getAllOfUser(req, res) {
@@ -76,7 +84,7 @@ class ReviewController {
         $search: {
           text: {
             query: req.query.q,
-            path: { wildcard: "*" },
+            path: ["markdown", "comments.text", "title"],
             // fuzzy: {
             //   maxEdits: 1,
             // },

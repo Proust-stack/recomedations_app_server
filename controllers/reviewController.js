@@ -12,6 +12,10 @@ const {
   createReviewRating,
   addDataToComposition,
 } = require("../services/review/createReviewService");
+const {
+  searchReview,
+  searchComments,
+} = require("../services/review/searchReviewService");
 
 class ReviewController {
   async getOne(req, res) {
@@ -72,39 +76,13 @@ class ReviewController {
     res.status(200).json(reviews);
   }
   async search(req, res) {
-    // const reviews = await Review.aggregate().search({
-    //   text: {
-    //     query: req.query.q,
-    //     path: ["markdown", "comments", "title"],
-    //   },
-    // });
-
-    const reviews = await Review.aggregate([
-      {
-        $search: {
-          text: {
-            query: req.query.q,
-            path: ["markdown", "comments.text", "title"],
-            // fuzzy: {
-            //   maxEdits: 1,
-            // },
-          },
-          highlight: {
-            path: "markdown",
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: Comment.collection.name,
-          localField: "comments",
-          foreignField: "_id",
-          as: "comments",
-        },
-      },
-    ]);
-
-    res.status(200).json(reviews);
+    const reviewsFromReviewModel = await searchReview(req.query.q);
+    const commentResults = await searchComments(req.query.q);
+    const reviewsFromCommentModel = commentResults.map(
+      (comment) => comment.review
+    );
+    const result = reviewsFromReviewModel.concat(reviewsFromCommentModel);
+    res.status(200).json(result);
   }
   async createReview(req, res) {
     const savedReviewRating = await createReviewRating(

@@ -28,8 +28,4 @@ const ReviewSchema = new Schema(
   }
 );
 
-// ReviewSchema.pre("aggregate", function (docs) {
-//   mongoose.model("Review", ReviewSchema).find().populate("comments");
-// });
-
 module.exports = mongoose.model("Review", ReviewSchema);

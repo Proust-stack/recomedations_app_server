@@ -4,10 +4,7 @@ const Comment = require("../models/comment");
 const Composition = require("../models/composition");
 const ReviewRating = require("../models/reviewRating");
 const createError = require("../utils/error");
-const {
-  updateReviewRating,
-  updateReview,
-} = require("../services/review/updateReviewService");
+const { updateReview } = require("../services/review/updateReviewService");
 const {
   createReviewRating,
   addDataToComposition,
@@ -100,17 +97,12 @@ class ReviewController {
   }
   async updateReview(req, res, next) {
     if (req.user.id === req.body.user || req.user.isAdmin) {
-      const savedReviewRating = await updateReviewRating(
-        req.body.reviewsRatingId,
-        req.body.reviewRating
-      );
-      // await updateComposition(req.body.composition);
-
       const updatedReview = await updateReview(
         req.params.id,
         req.body.tags,
         req.body.title,
-        req.body.markdown
+        req.body.markdown,
+        req.body.img
       );
       res.status(200).json(updatedReview);
     } else {

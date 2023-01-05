@@ -30,7 +30,10 @@ class CompositionController {
   async getAllByGroup(req, res) {
     const compositions = await Composition.find({
       group: req.params.id,
-    }).limit(20);
+    })
+      .populate("reviewsRating")
+      .populate("usersRating")
+      .limit(20);
     res.status(200).json(compositions);
   }
   async getAllCompositions(req, res) {

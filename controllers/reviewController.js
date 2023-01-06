@@ -109,10 +109,12 @@ class ReviewController {
       return next(createError(403, "Access denied"));
     }
   }
-  async deleteReview(req, res) {
+  async deleteReview(req, res, next) {
     const review = await Review.findById(req.body.reviews[0]);
-    const user = await User.findById(req.user.id);
-    if (req.user.id === review.user || user.isAdmin) {
+    if (
+      req.user._id.toString() === review.user.toString() ||
+      req.user.isAdmin
+    ) {
       await Review.deleteMany({ _id: { $in: req.body.reviews } });
       res.status(200).json({ success: true });
     } else {

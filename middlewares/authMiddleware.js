@@ -12,9 +12,7 @@ module.exports = async (req, res, next) => {
     return user;
   });
   const { id } = data;
-  console.log(id);
   const user = await User.findById(id);
-  console.log(user);
   if (user.blocked) next(createError(401, "Access denied"));
   req.user = user;
   next();
